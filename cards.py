@@ -1,3 +1,4 @@
+#(x,y) position is for sprite sheet location of each card
 class card:
     def __init__(self,hand,suit,number,text,x,y):
         self.Hand=hand
