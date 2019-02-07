@@ -1,3 +1,14 @@
+from random import shuffle
+import spritesheet
+import pygame
+
+pygame.init()
+screen_width = 700
+screen_height = 400
+screen = pygame.display.set_mode([screen_width, screen_height])
+pygame.display.set_caption("Python Black Jack")
+screen.fill((0, 51, 25))
+
 #(x,y) position is for sprite sheet location of each card
 class card:
     def __init__(self,hand,suit,number,text,x,y):
@@ -75,3 +86,66 @@ deck=[aceH,kingH,queenH,jackH,tenH,nineH,eightH,sevenH,sixH,fiveH,fourH,threeH,t
       aceC,kingC,queenC,jackC,tenC,nineC,eightC,sevenC,sixC,fiveC,fourC,threeC,twoC]
 
 
+def new_hand():
+    shuffle(deck)
+    ### set up player and dealer starting hand
+    playerHand = []
+    playerHand.append(deck[0])
+    playerHand.append(deck[2])
+    computerHand =[]
+    computerHand.append(deck[1])
+    computerHand.append(deck[3])
+
+    ss = spritesheet.spritesheet('cards.jpg')
+    # Sprite is 16x16 pixels at location 0,0 in the file...
+    image = ss.image_at((playerHand[0].X, playerHand[0].Y, 50, 75))
+    image2 = ss.image_at((playerHand[1].X, playerHand[1].Y, 50, 75))
+    cardD1 = ss.image_at((20, 384, 50, 75))
+    cardD2 = ss.image_at((computerHand[1].X, computerHand[1].Y, 50, 75))
+
+
+    screen.blit(image, (350, 250))
+    screen.blit(image2, (290, 250))
+    screen.blit(cardD1, (290, 50))
+    screen.blit(cardD2, (350, 50))
+    pygame.display.flip()
+    print(computerHand[0].Hand)
+
+    cardcount=4
+
+    playerhit=input("would you like to hit? y/n")
+    if playerhit == ('y'):
+        playerHand.append(deck[cardcount])
+        cardcount+=1
+        image3 = ss.image_at((playerHand[2].X, playerHand[2].Y, 50, 75))
+        screen.blit(image3, (410, 250))
+        pygame.display.flip()
+        print (playerHand[2].Hand)
+    if playerhit==('n'):
+        cardD1 = ss.image_at((computerHand[0].X, computerHand[0].Y, 50, 75))
+        screen.blit(cardD1, (290, 50))
+        pygame.display.flip()
+        dealerstrength=0
+        for item in computerHand:
+            dealerstrength=dealerstrength+item.Number
+        print ("dealer Strength is", dealerstrength)
+        if dealerstrength < 17:
+            computerHand.append(deck[cardcount])
+            cardD3 = ss.image_at((computerHand[2].X, computerHand[2].Y, 50, 75))
+            screen.blit(cardD3, (410, 50))
+            pygame.display.flip()
+    redeal=input("Deal again?")
+    if redeal == ('y'):
+        screen.fill((0, 51, 25))
+        new_hand()
+    else:
+        global done
+        done=True
+
+new_hand()
+
+done=False
+while not done:
+    for event in pygame.event.get():  # User did something
+        if event.type == pygame.QUIT:  # If user clicked close
+            done = True  # Flag that we are done so we exit this loop
